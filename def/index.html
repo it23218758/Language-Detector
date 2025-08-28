@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Detector</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤟 Sign Language Detector</h1>
+            <p>Show hand gestures to convert them into words</p>
+        </header>
+
+        <div class="main-content">
+            <div class="camera-section">
+                <div class="video-container">
+                    <video id="video" autoplay muted></video>
+                    <canvas id="canvas" class="output_canvas"></canvas>
+                    <div class="camera-overlay">
+                        <div class="gesture-box">
+                            <span>Place your hand here</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-primary">Start Camera</button>
+                    <button id="stopBtn" class="btn btn-secondary" disabled>Stop Camera</button>
+                    <button id="clearBtn" class="btn btn-clear">Clear Text</button>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="detection-info">
+                    <h3>Detection Status</h3>
+                    <div class="status-indicator">
+                        <span id="statusText">Waiting for camera...</span>
+                        <div id="statusDot" class="status-dot"></div>
+                    </div>
+                </div>
+
+                <div class="text-output">
+                    <h3>Detected Text</h3>
+                    <div class="output-display">
+                        <div id="currentWord" class="current-word">No gesture detected</div>
+                        <div id="fullText" class="full-text"></div>
+                    </div>
+                </div>
+
+                <div class="gesture-guide">
+                    <h3>Supported Signs</h3>
+                    <div class="gesture-categories">
+                        <div class="category">
+                            <h4>ASL Alphabet</h4>
+                            <div class="gesture-grid">
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">A</div>
+                                    <span>Fist</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">B</div>
+                                    <span>Flat hand</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">C</div>
+                                    <span>Curved hand</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">D</div>
+                                    <span>Index up</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">E</div>
+                                    <span>Curved down</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">F</div>
+                                    <span>OK + fingers up</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">G</div>
+                                    <span>Pointing</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">H</div>
+                                    <span>Two fingers</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">I</div>
+                                    <span>Pinky up</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">L</div>
+                                    <span>L shape</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">O</div>
+                                    <span>Circle</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">V</div>
+                                    <span>Peace sign</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">W</div>
+                                    <span>Three fingers</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">Y</div>
+                                    <span>Thumb + pinky</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category">
+                            <h4>Numbers</h4>
+                            <div class="gesture-grid">
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">0</div>
+                                    <span>Fist</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">1</div>
+                                    <span>One finger</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">2</div>
+                                    <span>Two fingers</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">3</div>
+                                    <span>Three fingers</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">4</div>
+                                    <span>Four fingers</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">5</div>
+                                    <span>Open palm</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">6</div>
+                                    <span>Thumb + index</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">7</div>
+                                    <span>Thumb + 2 fingers</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">8</div>
+                                    <span>Thumb + 3 fingers</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">9</div>
+                                    <span>Thumb + 4 fingers</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">10</div>
+                                    <span>Thumbs up</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category">
+                            <h4>Finger Writing</h4>
+                            <div class="gesture-grid">
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">✍️</div>
+                                    <span>Draw letters</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">👆</div>
+                                    <span>Index finger only</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">📝</div>
+                                    <span>Write in air</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">⏱️</div>
+                                    <span>Hold 1-2 seconds</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category">
+                            <h4>Common Gestures</h4>
+                            <div class="gesture-grid">
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">👋</div>
+                                    <span>Hello</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">👍</div>
+                                    <span>Good</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">👎</div>
+                                    <span>Bad</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">✌️</div>
+                                    <span>Peace</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">👌</div>
+                                    <span>OK</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">🤙</div>
+                                    <span>Call me</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">✊</div>
+                                    <span>Stop</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">🖐️</div>
+                                    <span>Open</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">👆</div>
+                                    <span>Point</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-preview">✋</div>
+                                    <span>Wait</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="gesture-tips">
+                        <h4>💡 Tips for Better Detection</h4>
+                        <ul>
+                            <li>Ensure good lighting on your hands</li>
+                            <li>Keep your hand steady and clearly visible</li>
+                            <li>Position your hand in the center of the camera</li>
+                            <li>Hold gestures for 1-2 seconds for recognition</li>
+                            <li>Adjust confidence slider if needed</li>
+                            <li><strong>Finger Writing:</strong> Extend only your index finger to write letters in the air</li>
+                            <li><strong>Writing Tips:</strong> Draw letters clearly and hold for 1 second after finishing</li>
+                            <li><strong>Supported Letters:</strong> A, C, E, F, H, I, L, M, N, O, S, U, V, W, X, Z</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-panel">
+            <h3>Settings</h3>
+            <div class="setting-item">
+                <label for="confidenceSlider">Detection Confidence:</label>
+                <input type="range" id="confidenceSlider" min="0.5" max="1.0" step="0.1" value="0.8">
+                <span id="confidenceValue">0.8</span>
+            </div>
+            <div class="setting-item">
+                <label for="autoSpace">Auto-add space between words:</label>
+                <input type="checkbox" id="autoSpace" checked>
+            </div>
+            <div class="setting-item">
+                <label for="enableWriting">Enable Finger Writing (pinch to draw):</label>
+                <input type="checkbox" id="enableWriting" checked>
+            </div>
+            <div class="setting-item">
+                <label for="writingSensitivity">Writing Sensitivity (pinch threshold):</label>
+                <input type="range" id="writingSensitivity" min="0.01" max="0.10" step="0.005" value="0.035">
+                <span id="writingSensitivityValue">0.035</span>
+            </div>
+            <div class="setting-item">
+                <label for="writingTimeout">Stroke Timeout (ms):</label>
+                <input type="number" id="writingTimeout" min="300" max="3000" step="100" value="1200">
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

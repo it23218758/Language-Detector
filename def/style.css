@@ -1,0 +1,487 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.camera-section {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f0f0f0;
+    margin-bottom: 20px;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.camera-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.gesture-box {
+    border: 3px dashed #667eea;
+    border-radius: 10px;
+    padding: 20px;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    font-weight: bold;
+    text-align: center;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 120px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.btn-clear {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-clear:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.output-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.detection-info, .text-output, .gesture-guide {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.detection-info h3, .text-output h3, .gesture-guide h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dc3545;
+    animation: pulse 2s infinite;
+}
+
+.status-dot.active {
+    background: #28a745;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.output-display {
+    min-height: 120px;
+}
+
+.current-word {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 15px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.full-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #666;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    min-height: 80px;
+    border-left: 4px solid #667eea;
+}
+
+.gesture-guide {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.gesture-guide h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.gesture-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.category {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+}
+
+.category h4 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 5px;
+}
+
+.gesture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+}
+
+.gesture-item {
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.gesture-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.gesture-preview {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.gesture-item span {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.gesture-tips {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+    color: white;
+}
+
+.gesture-tips h4 {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.gesture-tips ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.gesture-tips li {
+    padding: 5px 0;
+    font-size: 0.9rem;
+    position: relative;
+    padding-left: 20px;
+}
+
+.gesture-tips li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.settings-panel {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.settings-panel h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.setting-item label {
+    font-weight: 500;
+    min-width: 200px;
+}
+
+.setting-item input[type="range"] {
+    flex: 1;
+    min-width: 150px;
+}
+
+.setting-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #667eea;
+}
+
+#confidenceValue {
+    font-weight: bold;
+    color: #667eea;
+    min-width: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .video-container {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .video-container {
+        height: 250px;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    .btn {
+        flex: none;
+    }
+    
+    .current-word {
+        font-size: 1.5rem;
+    }
+    
+    .gesture-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .setting-item label {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .video-container {
+        height: 200px;
+    }
+    
+    .gesture-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .current-word {
+        font-size: 1.3rem;
+    }
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success animation */
+.success-animation {
+    animation: successPulse 0.6s ease-in-out;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+} 
+
+/* Enhanced responsive design for gesture categories */
+@media (max-width: 768px) {
+    .gesture-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .gesture-preview {
+        font-size: 1.2rem;
+    }
+    
+    .gesture-item span {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .gesture-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .gesture-categories {
+        gap: 15px;
+    }
+    
+    .category {
+        padding: 10px;
+    }
+} 
